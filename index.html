@@ -72,23 +72,10 @@
             transition: transform 0.3s;
         }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .stat-card:nth-child(2) {
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
-        }
-
-        .stat-card:nth-child(3) {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-        }
-
-        .stat-card h3 {
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-card:nth-child(2) { background: linear-gradient(135deg, var(--accent), var(--accent-light)); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
+        .stat-card:nth-child(3) { background: linear-gradient(135deg, var(--primary), var(--accent)); }
+        .stat-card h3 { font-size: 2rem; margin-bottom: 5px; }
 
         .progress-bar {
             width: 100%;
@@ -138,14 +125,8 @@
             transition: all 0.3s;
             white-space: nowrap;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-        }
-
-        .btn-success {
-            background: var(--accent);
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+        .btn-success { background: var(--accent); }
 
         .filter-btn {
             padding: 8px 16px;
@@ -158,11 +139,7 @@
             flex-grow: 1;
             text-align: center;
         }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
+        .filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; }
 
         .task-card {
             background: var(--card);
@@ -172,12 +149,7 @@
             margin-bottom: 20px;
             transition: all 0.3s;
         }
-
-        .task-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary);
-        }
-
+        .task-card:hover { transform: translateY(-2px); border-color: var(--primary); }
         .task-card.completed {
             background: linear-gradient(135deg, #1e3a8a, #7c2d12);
             border-color: var(--primary);
@@ -189,24 +161,41 @@
             50% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.4); }
         }
 
-        /* --- ИЗМЕНЕННЫЙ БЛОК HEADER --- */
+        /* --- ИСПРАВЛЕННОЕ ВЫРАВНИВАНИЕ --- */
         .task-header {
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* Всё по левому краю */
-            gap: 12px; /* Аккуратный отступ между элементами */
+            justify-content: space-between; /* Левая часть - слева, Правая - справа */
+            gap: 15px;
+            width: 100%;
             cursor: pointer;
-            flex-wrap: wrap; /* Перенос только если совсем нет места */
+            min-height: 40px;
+        }
+
+        /* Левая группа: Чекбокс + Эмодзи + Текст */
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Отступ между чекбоксом и текстом */
+            flex: 1; /* Занимает все свободное место */
+            text-align: left;
+        }
+
+        /* Правая группа: Время + Очки */
+        .task-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0; /* Не сжиматься */
         }
 
         .task-checkbox {
             width: 24px;
             height: 24px;
-            min-width: 24px; /* Чтобы чекбокс не сплющивался */
+            min-width: 24px;
             cursor: pointer;
             accent-color: var(--primary);
-            flex-shrink: 0;
-            margin: 0; /* Убираем лишние отступы */
+            margin: 0;
         }
 
         .task-emoji {
@@ -218,16 +207,8 @@
         .task-title {
             font-size: 1.1rem;
             font-weight: 600;
-            margin-right: 5px; /* Небольшой отступ до бейджей */
-            /* Убрали flex: 1, чтобы заголовок не отталкивал бейджи вправо */
+            line-height: 1.3;
         }
-
-        .task-meta {
-            display: flex;
-            gap: 8px; /* Расстояние между временем и очками */
-            flex-shrink: 0; /* Чтобы бейджи не сжимались */
-        }
-        /* --- КОНЕЦ ИЗМЕНЕНИЙ HEADER --- */
 
         .task-time, .task-points {
             padding: 4px 10px;
@@ -235,11 +216,10 @@
             font-size: 0.8rem;
             color: white;
             white-space: nowrap;
-            display: inline-block;
         }
-
         .task-time { background: var(--primary); }
         .task-points { background: var(--accent); }
+        /* --- КОНЕЦ ИСПРАВЛЕНИЙ --- */
 
         .task-content {
             margin-top: 20px;
@@ -248,7 +228,6 @@
             display: none;
             animation: slideDown 0.3s;
         }
-
         .task-content.show { display: block; }
 
         @keyframes slideDown {
@@ -256,17 +235,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .task-content h3 {
-            margin-top: 15px;
-            margin-bottom: 10px;
-            color: var(--primary-light);
-        }
-
-        .task-content ul {
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-
+        .task-content h3 { margin-top: 15px; margin-bottom: 10px; color: var(--primary-light); }
+        .task-content ul { margin-left: 20px; line-height: 1.8; }
         .task-content li { margin-bottom: 8px; }
 
         .badge-container {
@@ -276,7 +246,6 @@
             margin-top: 20px;
             justify-content: center;
         }
-
         .badge {
             padding: 8px 16px;
             border-radius: 8px;
@@ -285,11 +254,7 @@
             color: white;
             font-size: 0.9rem;
         }
-
-        .badge.locked {
-            background: #475569;
-            opacity: 0.5;
-        }
+        .badge.locked { background: #475569; opacity: 0.5; }
 
         .next-task-btn {
             background: var(--accent);
@@ -304,7 +269,6 @@
             font-size: 1.1rem;
             margin-top: 20px;
         }
-
         .next-task-btn:hover { background: var(--accent-dark); }
 
         .certificate {
@@ -323,7 +287,6 @@
             color: var(--text-secondary);
             border-left: 4px solid;
         }
-
         .pro-tip { background: #7c2d12; border-color: var(--accent); }
         .fact { background: #1e3a8a; border-color: var(--primary); }
         .mistake { background: #991b1b; border-color: #ef4444; }
@@ -336,20 +299,14 @@
             z-index: 9999;
         }
 
-        /* Mobile Optimization */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .container { padding: 20px; }
             .header h1 { font-size: 1.8rem; }
             
-            /* На мобильном оставляем всё в строку, переносим только если очень длинно */
-            .task-header { 
-                align-items: center; 
-                gap: 10px;
-            }
-            .task-title {
-                margin-right: 0;
-            }
+            /* На мобильных переносим бейджи вниз, если тесно */
+            .task-header { flex-wrap: wrap; }
+            .task-right { margin-left: auto; }
             
             .controls { flex-direction: column; }
             .controls button { width: 100%; }
@@ -991,10 +948,12 @@
 
             taskDiv.innerHTML = `
                 <div class="task-header" onclick="toggleTask(${task.id})">
-                    <input type="checkbox" class="task-checkbox" id="cb-${task.id}" onclick="checkTask(event, ${task.id})">
-                    <span class="task-emoji">${task.emoji}</span>
-                    <span class="task-title">${task.id}: ${task.title}</span>
-                    <div class="task-meta">
+                    <div class="task-left">
+                        <input type="checkbox" class="task-checkbox" id="cb-${task.id}" onclick="checkTask(event, ${task.id})">
+                        <span class="task-emoji">${task.emoji}</span>
+                        <span class="task-title">${task.id}: ${task.title}</span>
+                    </div>
+                    <div class="task-right">
                         <span class="task-time">${task.time}</span>
                         <span class="task-points">${task.points} pts</span>
                     </div>
