@@ -125,7 +125,7 @@
             background: var(--card);
             color: var(--text);
             border-radius: 8px;
-            font-size: 16px; /* Prevents zoom on iOS */
+            font-size: 16px;
         }
 
         .btn {
@@ -189,56 +189,57 @@
             50% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.4); }
         }
 
+        /* --- ИЗМЕНЕННЫЙ БЛОК HEADER --- */
         .task-header {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: flex-start; /* Всё по левому краю */
+            gap: 12px; /* Аккуратный отступ между элементами */
             cursor: pointer;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Перенос только если совсем нет места */
         }
 
         .task-checkbox {
             width: 24px;
             height: 24px;
-            min-width: 24px;
+            min-width: 24px; /* Чтобы чекбокс не сплющивался */
             cursor: pointer;
             accent-color: var(--primary);
+            flex-shrink: 0;
+            margin: 0; /* Убираем лишние отступы */
+        }
+
+        .task-emoji {
+            font-size: 1.8rem;
+            line-height: 1;
             flex-shrink: 0;
         }
 
         .task-title {
-            flex: 1;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            min-width: 200px;
-        }
-
-        .task-emoji {
-            font-size: 2rem;
-            line-height: 1;
+            margin-right: 5px; /* Небольшой отступ до бейджей */
+            /* Убрали flex: 1, чтобы заголовок не отталкивал бейджи вправо */
         }
 
         .task-meta {
             display: flex;
-            gap: 8px;
-            margin-left: auto;
+            gap: 8px; /* Расстояние между временем и очками */
+            flex-shrink: 0; /* Чтобы бейджи не сжимались */
         }
+        /* --- КОНЕЦ ИЗМЕНЕНИЙ HEADER --- */
 
         .task-time, .task-points {
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: white;
             white-space: nowrap;
+            display: inline-block;
         }
 
-        .task-time {
-            background: var(--primary);
-        }
-
-        .task-points {
-            background: var(--accent);
-        }
+        .task-time { background: var(--primary); }
+        .task-points { background: var(--accent); }
 
         .task-content {
             margin-top: 20px;
@@ -248,9 +249,7 @@
             animation: slideDown 0.3s;
         }
 
-        .task-content.show {
-            display: block;
-        }
+        .task-content.show { display: block; }
 
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
@@ -268,9 +267,7 @@
             line-height: 1.8;
         }
 
-        .task-content li {
-            margin-bottom: 8px;
-        }
+        .task-content li { margin-bottom: 8px; }
 
         .badge-container {
             display: flex;
@@ -308,9 +305,7 @@
             margin-top: 20px;
         }
 
-        .next-task-btn:hover {
-            background: var(--accent-dark);
-        }
+        .next-task-btn:hover { background: var(--accent-dark); }
 
         .certificate {
             background: var(--card);
@@ -346,18 +341,22 @@
             body { padding: 10px; }
             .container { padding: 20px; }
             .header h1 { font-size: 1.8rem; }
-            .task-header { align-items: flex-start; }
-            .task-checkbox { margin-top: 4px; }
-            .task-title { font-size: 1.1rem; width: 100%; margin-bottom: 8px; }
-            .task-meta { margin-left: 0; width: 100%; justify-content: flex-start; }
+            
+            /* На мобильном оставляем всё в строку, переносим только если очень длинно */
+            .task-header { 
+                align-items: center; 
+                gap: 10px;
+            }
+            .task-title {
+                margin-right: 0;
+            }
+            
             .controls { flex-direction: column; }
             .controls button { width: 100%; }
         }
 
         @media print {
-            .controls, .filter-buttons, .next-task-btn, .badge-container {
-                display: none;
-            }
+            .controls, .filter-buttons, .next-task-btn, .badge-container { display: none; }
             .task-content { display: block !important; }
         }
     </style>
@@ -1052,26 +1051,18 @@
         document.getElementById('progressFill').style.width = `${(completed / tasks.length) * 100}%`;
         document.getElementById('progressFill').innerText = `${Math.round((completed / tasks.length) * 100)}%`;
 
-        // Update badges
         const badgesDiv = document.getElementById('badges');
         const badges = badgesDiv.children;
 
-        // AI Master badge - tasks 9, 11, 13, 14
         if ([9, 11, 13, 14].every(id => document.getElementById(`cb-${id}`).checked)) {
             badges[0].classList.remove('locked');
         }
-
-        // Chrome Ninja - task 10
         if (document.getElementById('cb-10').checked) {
             badges[1].classList.remove('locked');
         }
-
-        // Sheets Wizard - task 15
         if (document.getElementById('cb-15').checked) {
             badges[2].classList.remove('locked');
         }
-
-        // 100% Complete
         if (completed === tasks.length) {
             badges[3].classList.remove('locked');
         }
