@@ -106,7 +106,7 @@
             flex-wrap: wrap;
         }
 
-        input {
+        input[type="text"] {
             flex: 1;
             min-width: 200px;
             padding: 12px;
@@ -143,7 +143,7 @@
         }
         .filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; }
 
-        /* --- TASKS STYLING (ОБНОВЛЕННОЕ) --- */
+        /* --- TASKS STYLING --- */
         .task-card {
             background: var(--card);
             border: 2px solid var(--border);
@@ -170,31 +170,34 @@
             padding: 5px 0;
         }
 
-        /* ЛЕВАЯ ЧАСТЬ: Прибиваем влево */
+        /* ЛЕВАЯ ЧАСТЬ: Эмодзи + Текст */
         .task-left {
             display: flex;
             align-items: center;
-            gap: 16px; /* Отступ между элементами */
-            flex-grow: 1; /* Занимает все место */
-            justify-content: flex-start; /* ВЫРАВНИВАНИЕ ПО ЛЕВОМУ КРАЮ */
+            gap: 16px; 
+            flex-grow: 1; 
+            justify-content: flex-start;
             text-align: left;
+            margin-right: 15px; /* Отступ от правой части */
         }
 
-        /* ПРАВАЯ ЧАСТЬ: Время и очки */
+        /* ПРАВАЯ ЧАСТЬ: Время + Очки + ЧЕКБОКС */
         .task-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px; /* Расстояние между элементами правой части */
             flex-shrink: 0;
-            margin-left: 15px;
         }
 
-        /* КАСТОМНЫЙ ЧЕКБОКС */
+        /* КАСТОМНЫЙ ЧЕКБОКС (Исправленный) */
         .task-checkbox {
             -webkit-appearance: none;
             appearance: none;
-            min-width: 26px;
-            height: 26px;
+            /* ФИКСИРОВАННЫЕ РАЗМЕРЫ */
+            min-width: 28px;
+            width: 28px;
+            height: 28px;
+            
             border: 2px solid #475569;
             border-radius: 8px;
             background-color: rgba(15, 23, 42, 0.5);
@@ -332,8 +335,9 @@
         /* --- MOBILE ADAPTIVE --- */
         @media (max-width: 600px) {
             .task-header { flex-wrap: wrap; }
-            .task-left { width: 100%; margin-bottom: 8px; }
-            .task-right { margin-left: 42px; /* Выравнивание под текстом */ width: 100%; justify-content: flex-start;}
+            .task-left { width: 100%; margin-bottom: 8px; margin-right: 0;}
+            /* На мобильных чекбокс справа внизу, а время слева */
+            .task-right { width: 100%; justify-content: space-between; } 
             .controls { flex-direction: column; }
             .container { padding: 15px; }
         }
@@ -972,16 +976,19 @@
             taskDiv.className = 'task-card';
             taskDiv.id = `t-${task.id}`;
 
+            // ЗДЕСЬ ИЗМЕНЕНИЯ:
+            // 1. В task-left оставили только Эмодзи и Заголовок
+            // 2. В task-right добавили Чекбокс в самый конец
             taskDiv.innerHTML = `
                 <div class="task-header" onclick="toggleTask(${task.id})">
                     <div class="task-left">
-                        <input type="checkbox" class="task-checkbox" id="cb-${task.id}" onclick="checkTask(event, ${task.id})">
                         <span class="task-emoji">${task.emoji}</span>
                         <span class="task-title">${task.id}: ${task.title}</span>
                     </div>
                     <div class="task-right">
                         <span class="task-time">${task.time}</span>
                         <span class="task-points">${task.points} pts</span>
+                        <input type="checkbox" class="task-checkbox" id="cb-${task.id}" onclick="checkTask(event, ${task.id})">
                     </div>
                 </div>
                 <div class="task-content" id="ct-${task.id}">
