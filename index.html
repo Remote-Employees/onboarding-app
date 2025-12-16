@@ -192,14 +192,40 @@ input {
     align-items: center;
     gap: 15px;
     cursor: pointer;
+    flex-wrap: wrap;
 }
 
 .task-checkbox {
     width: 24px;
     height: 24px;
+    min-width: 24px;
     cursor: pointer;
     accent-color: var(--primary);
     flex-shrink: 0;
+    order: -1;
+}
+
+@media (max-width: 768px) {
+    .task-header {
+        gap: 10px;
+    }
+
+    .task-emoji {
+        order: 1;
+    }
+
+    .task-title {
+        order: 2;
+        flex-basis: 100%;
+    }
+
+    .task-time {
+        order: 3;
+    }
+
+    .task-points {
+        order: 4;
+    }
 }
 
 .task-title {
