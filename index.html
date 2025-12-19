@@ -709,4 +709,51 @@
     function showToast(points) {
         const toast = document.createElement('div');
         toast.innerText = `🎉 +${points} points!`;
-        toast.style.cssText = `position: fixed; top: 20px; right: 20px; background: #f97316; color: white; padding: 15px; border-radius: 8px; z-index: 9999; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideIn 0.3
+        toast.style.cssText = `position: fixed; top: 20px; right: 20px; background: #f97316; color: white; padding: 15px; border-radius: 8px; z-index: 9999; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideIn 0.3s;`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+
+    function fireConfetti() {
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const particles = Array(100).fill().map(() => ({
+            x: Math.random() * canvas.width,
+            y: -20,
+            speed: Math.random() * 5 + 2,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        }));
+        let frame = 0;
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.y += p.speed;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, 5, 5);
+                if (p.y > canvas.height) p.y = -20;
+            });
+            if (frame++ < 200) requestAnimationFrame(animate);
+            else canvas.style.display = 'none';
+        }
+        animate();
+    }
+
+    function exportData() {
+        const data = {
+            date: new Date().toISOString(),
+            points: document.getElementById('totalPoints').innerText,
+            completed: document.getElementById('completedCount').innerText
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'progress.json';
+        a.click();
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
