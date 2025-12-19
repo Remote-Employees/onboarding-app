@@ -928,70 +928,6 @@
     ];
 
     let currentFilter = 'all';
-  const SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwZXuiNXj9oSbsbkU7kj9jF1t6qdAB9woTAS0GtdRHI_Our-YAvsUcLdXiWnL6h0Dnf/exec";
-
-function isValidUrl(s) {
-  try { new URL(s); return true; } catch { return false; }
-}
-
-async function submitDoneLink() {
-  const input = document.getElementById("doneLinkInput");
-  const link = (input.value || "").trim();
-
-  if (!link) return alert("Please paste your link first.");
-  if (!isValidUrl(link)) return alert("Invalid URL. Use https://...");
-
-  // GitHub Pages → Apps Script: используем no-cors
-  await fetch(SHEETS_WEBAPP_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      timestamp: new Date().toISOString(),
-      link,
-      page: location.href,
-      tag: "When are you done"
-    })
-  });
-
-  alert("✅ Saved to Google Sheets!");
-  input.value = "";
-}
-
-function renderDoneCard() {
-  const container = document.getElementById('tasksContainer');
-
-  const doneDiv = document.createElement('div');
-  doneDiv.className = 'task-card';
-  doneDiv.id = 't-16';
-
-  doneDiv.innerHTML = `
-    <div class="task-header" onclick="document.getElementById('ct-16').classList.toggle('show')">
-      <div class="task-left">
-        <span class="task-emoji">✅</span>
-        <span class="task-title">16: When are you done</span>
-      </div>
-      <div class="task-right">
-        <span class="task-time">1 min</span>
-        <span class="task-points">0 pts</span>
-      </div>
-    </div>
-
-    <div class="task-content show" id="ct-16">
-      <h3>🔗 Paste your final link</h3>
-      <p style="margin-bottom:10px;color:var(--text-secondary)">
-        Paste the link you want HR to check, then click “Save Link”.
-      </p>
-
-      <div class="controls" style="margin-bottom:0">
-        <input type="text" id="doneLinkInput" placeholder="https://..." />
-        <button class="btn btn-primary" onclick="submitDoneLink()">📌 Save Link</button>
-      </div>
-    </div>
-  `;
-
-  container.appendChild(doneDiv);
-}
 
     const quotes = [
         "The journey of a thousand miles begins with a single step",
@@ -1005,10 +941,9 @@ function renderDoneCard() {
     ];
 
     function init() {
-    renderTasks();
-    renderDoneCard();
-    loadProgress();
-    updateStats();
+        renderTasks();
+        loadProgress();
+        updateStats();
         document.getElementById('quote').innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
 
         document.getElementById('searchInput').addEventListener('input', filterTasks);
@@ -1239,3 +1174,5 @@ function renderDoneCard() {
 </script>
 </body>
 </html>
+
+
