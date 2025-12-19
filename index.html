@@ -79,7 +79,6 @@
         /* --- CONTROLS --- */
         .controls, .filter-buttons { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
         
-        /* Стили для полей ввода (Search и Form) */
         input[type="text"], input[type="url"] {
             flex: 1; min-width: 200px; padding: 12px; border: 2px solid var(--border);
             background: var(--bg); color: var(--text); border-radius: 8px; font-size: 16px;
@@ -137,7 +136,7 @@
         .task-content ul { margin-left: 20px; line-height: 1.6; }
         .task-content li { margin-bottom: 8px; }
 
-        /* --- FINAL FORM STYLING (Task 16) --- */
+        /* --- FINAL FORM STYLING --- */
         .final-form {
             background: rgba(0,0,0,0.2);
             padding: 25px;
@@ -264,11 +263,8 @@
     </div>
 
 <script>
-    // =========================================================================
-    // ⚠️ ВАЖНО: ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ WEB APP URL ОТ GOOGLE APPS SCRIPT
-    // =========================================================================
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzg_xL2wvR4j6iNVDWWQ5FnYCM-IhWvi7grDje79DCaviMpiU2oIhxZ6dSIfL2NntQ1/exec'; 
-    // Пример: const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx.../exec';
+    // --- ВАШ СКРИПТ ---
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzg_xL2wvR4j6iNVDWWQ5FnYCM-IhWvi7grDje79DCaviMpiU2oIhxZ6dSIfL2NntQ1/exec';
 
     const tasks = [
         {
@@ -446,4 +442,271 @@
             title: "Video Generation - Test AI Tools",
             time: "45 min",
             points: 45,
-            why: "AI can now generate VIDEOS
+            why: "AI can now generate VIDEOS!",
+            steps: ["Find 2 video AI tools (e.g. Gemini)", "Generate same prompt in 2 tools", "Compare quality", "Document in comparison file"],
+            deliverables: ["Tested 2 video AI tools", "File: video_generation_comparison.md"],
+            facts: ["Gemini can generate short videos!"],
+            tips: ["Start with short videos (5s)"],
+            mistakes: ["❌ Expecting Hollywood quality immediately"]
+        },
+        {
+            id: 15,
+            emoji: "📊",
+            title: "Google Sheets Mastery",
+            time: "45 min",
+            points: 60,
+            why: "We use Google Sheets DAILY.",
+            steps: ["Create 'AI Tools Checklist' sheet", "Freeze row 1", "Create dropdowns", "Conditional formatting for duplicates", "Share with HR"],
+            deliverables: ["Sheet with frozen rows, dropdowns, conditional formatting", "Shared with HR"],
+            facts: ["Formulas automate calculations"],
+            tips: ["Freeze both row AND column"],
+            mistakes: ["❌ Manual coloring instead of conditional formatting"]
+        },
+        {
+            id: 16,
+            emoji: "🏁",
+            title: "When are you done?",
+            time: "1 min",
+            points: 0,
+            why: "Submit your results to the team to finish onboarding.",
+            steps: ["Verify all tasks above are checked", "Fill in your Name, Dropbox, and Sheet links", "Click Submit"],
+            deliverables: ["Form submitted successfully"],
+            facts: ["This triggers your official onboarding completion"],
+            isForm: true
+        }
+    ];
+
+    let currentFilter = 'all';
+
+    const quotes = [
+        "The journey of a thousand miles begins with a single step",
+        "Success is not final, failure is not fatal",
+        "AI is not magic, it's just math",
+        "Every expert was once a beginner",
+        "The only way to do great work is to love what you do",
+        "Your limitation—it's only your imagination",
+        "Great things never come from comfort zones",
+        "The harder you work, the luckier you get"
+    ];
+
+    function init() {
+        renderTasks();
+        loadProgress();
+        updateStats();
+        document.getElementById('quote').innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
+
+        document.getElementById('searchInput').addEventListener('input', filterTasks);
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.f;
+                filterTasks();
+            });
+        });
+
+        document.getElementById('nextTaskBtn').addEventListener('click', () => {
+            const nextTaskIndex = tasks.findIndex((_, i) => !document.getElementById(`cb-${i + 1}`).checked);
+            if (nextTaskIndex !== -1) {
+                const taskElement = document.getElementById(`t-${nextTaskIndex + 1}`);
+                taskElement.scrollIntoView({ behavior: 'smooth' });
+                taskElement.querySelector('.task-content').classList.add('show');
+            }
+        });
+    }
+
+    function renderTasks() {
+        const container = document.getElementById('tasksContainer');
+        container.innerHTML = '';
+
+        tasks.forEach(task => {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task-card';
+            taskDiv.id = `t-${task.id}`;
+
+            let contentHtml = '';
+            
+            if (task.isForm) {
+                contentHtml = `
+                    <h3>🚀 Final Submission</h3>
+                    <p>${task.why}</p>
+                    <form class="final-form" onsubmit="submitFinalForm(event, ${task.id})">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="fullName" required placeholder="Ivan Ivanov">
+                        </div>
+                        <div class="form-group">
+                            <label>Dropbox Link (Folder)</label>
+                            <input type="url" id="dropboxLink" required placeholder="https://www.dropbox.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label>Google Sheet Link</label>
+                            <input type="url" id="sheetLink" required placeholder="https://docs.google.com/spreadsheets/...">
+                        </div>
+                        <button type="submit" class="submit-btn" id="submitBtn">🚀 Save Link & Finish</button>
+                        <p class="form-status" id="formStatus"></p>
+                    </form>
+                `;
+            } else {
+                contentHtml = `
+                    <h3>💡 Why</h3>
+                    <p>${task.why}</p>
+                    <h3>📋 Steps</h3>
+                    <ul>${task.steps.map(s => `<li>${s}</li>`).join('')}</ul>
+                    <h3>✅ Deliverables</h3>
+                    <ul>${task.deliverables ? task.deliverables.map(d => `<li>${d}</li>`).join('') : ''}</ul>
+                    ${task.facts ? `<div class="fact"><strong>📚 Facts:</strong><ul>${task.facts.map(f => `<li>${f}</li>`).join('')}</ul></div>` : ''}
+                    ${task.tips ? `<div class="pro-tip"><strong>🎯 Tips:</strong><ul>${task.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}
+                    ${task.mistakes ? `<div class="mistake"><strong>🚨 Mistakes:</strong><ul>${task.mistakes.map(m => `<li>${m}</li>`).join('')}</ul></div>` : ''}
+                `;
+            }
+
+            taskDiv.innerHTML = `
+                <div class="task-header" onclick="toggleTask(${task.id})">
+                    <div class="task-left">
+                        <span class="task-emoji">${task.emoji}</span>
+                        <span class="task-title">${task.id}: ${task.title}</span>
+                    </div>
+                    <div class="task-right">
+                        <span class="task-time">${task.time}</span>
+                        <span class="task-points">${task.points} pts</span>
+                        <input type="checkbox" class="task-checkbox" id="cb-${task.id}" onclick="checkTask(event, ${task.id})">
+                    </div>
+                </div>
+                <div class="task-content" id="ct-${task.id}">
+                    ${contentHtml}
+                </div>
+            `;
+            container.appendChild(taskDiv);
+        });
+    }
+
+    function toggleTask(id) {
+        document.getElementById(`ct-${id}`).classList.toggle('show');
+    }
+
+    function checkTask(event, id) {
+        event.stopPropagation();
+        const isChecked = document.getElementById(`cb-${id}`).checked;
+        document.getElementById(`t-${id}`).classList.toggle('completed', isChecked);
+
+        if (isChecked) {
+            showToast(tasks.find(t => t.id === id).points);
+        }
+
+        saveProgress();
+        updateStats();
+        checkCompletion();
+    }
+
+    function submitFinalForm(e, id) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('formStatus');
+        const fullName = document.getElementById('fullName').value;
+        const dropboxLink = document.getElementById('dropboxLink').value;
+        const sheetLink = document.getElementById('sheetLink').value;
+
+        btn.disabled = true;
+        btn.innerText = "Sending...";
+        status.innerText = "";
+
+        const data = {
+            fullName: fullName,
+            dropboxLink: dropboxLink,
+            sheetLink: sheetLink
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            status.innerText = "✅ Sent successfully!";
+            status.className = "form-status success-msg";
+            btn.innerText = "Done";
+            
+            const checkbox = document.getElementById(`cb-${id}`);
+            if (!checkbox.checked) checkbox.click();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            status.innerText = "❌ Error sending data.";
+            status.className = "form-status error-msg";
+            btn.disabled = false;
+            btn.innerText = "Try Again";
+        });
+    }
+
+    function updateStats() {
+        const completed = tasks.filter((_, i) => document.getElementById(`cb-${i + 1}`).checked).length;
+        const points = tasks.reduce((sum, task, i) => 
+            sum + (document.getElementById(`cb-${i + 1}`).checked ? task.points : 0), 0
+        );
+
+        document.getElementById('completedCount').innerText = completed;
+        document.getElementById('totalPoints').innerText = points;
+        document.getElementById('streak').innerText = completed;
+        document.getElementById('progressFill').style.width = `${(completed / tasks.length) * 100}%`;
+        document.getElementById('progressFill').innerText = `${Math.round((completed / tasks.length) * 100)}%`;
+
+        const badgesDiv = document.getElementById('badges');
+        const badges = badgesDiv.children;
+
+        if ([9, 11, 13, 14].every(id => document.getElementById(`cb-${id}`).checked)) {
+            badges[0].classList.remove('locked');
+        }
+        if (document.getElementById('cb-10').checked) badges[1].classList.remove('locked');
+        if (document.getElementById('cb-15').checked) badges[2].classList.remove('locked');
+        if (completed === tasks.length) badges[3].classList.remove('locked');
+    }
+
+    function checkCompletion() {
+        if (tasks.every((_, i) => document.getElementById(`cb-${i + 1}`).checked)) {
+            document.getElementById('certSection').style.display = 'block';
+            document.getElementById('certPoints').innerText = document.getElementById('totalPoints').innerText;
+            document.getElementById('certDate').innerText = new Date().toLocaleDateString();
+            document.getElementById('certSection').scrollIntoView({ behavior: 'smooth' });
+            fireConfetti();
+        }
+    }
+
+    function filterTasks() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        tasks.forEach((task, i) => {
+            const taskElement = document.getElementById(`t-${i + 1}`);
+            const isChecked = document.getElementById(`cb-${i + 1}`).checked;
+            let visible = task.title.toLowerCase().includes(searchTerm);
+            if (currentFilter === 'completed' && !isChecked) visible = false;
+            if (currentFilter === 'incomplete' && isChecked) visible = false;
+            taskElement.style.display = visible ? 'block' : 'none';
+        });
+    }
+
+    function saveProgress() {
+        const progress = {};
+        tasks.forEach((_, i) => progress[`t-${i + 1}`] = document.getElementById(`cb-${i + 1}`).checked);
+        localStorage.setItem('onboarding_progress', JSON.stringify(progress));
+    }
+
+    function loadProgress() {
+        const progress = JSON.parse(localStorage.getItem('onboarding_progress'));
+        if (progress) {
+            Object.keys(progress).forEach(key => {
+                const checkbox = document.getElementById(key.replace('t', 'cb'));
+                if (checkbox) {
+                    checkbox.checked = progress[key];
+                    if (progress[key]) document.getElementById(key).classList.add('completed');
+                }
+            });
+        }
+    }
+
+    function showToast(points) {
+        const toast = document.createElement('div');
+        toast.innerText = `🎉 +${points} points!`;
+        toast.style.cssText = `position: fixed; top: 20px; right: 20px; background: #f97316; color: white; padding: 15px; border-radius: 8px; z-index: 9999; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideIn 0.3
