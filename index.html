@@ -78,10 +78,15 @@
 
         /* --- CONTROLS --- */
         .controls, .filter-buttons { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
-        input[type="text"] {
+        
+        /* Стили для полей ввода (Search и Form) */
+        input[type="text"], input[type="url"] {
             flex: 1; min-width: 200px; padding: 12px; border: 2px solid var(--border);
-            background: var(--card); color: var(--text); border-radius: 8px; font-size: 16px;
+            background: var(--bg); color: var(--text); border-radius: 8px; font-size: 16px;
+            transition: border-color 0.3s;
         }
+        input:focus { outline: none; border-color: var(--primary); }
+
         .btn {
             padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: white; transition: all 0.3s; white-space: nowrap;
         }
@@ -132,21 +137,34 @@
         .task-content ul { margin-left: 20px; line-height: 1.6; }
         .task-content li { margin-bottom: 8px; }
 
-        /* --- FINAL FORM STYLING --- */
+        /* --- FINAL FORM STYLING (Task 16) --- */
         .final-form {
             background: rgba(0,0,0,0.2);
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             margin-top: 15px;
             border: 1px solid var(--border);
         }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: var(--primary-light); font-weight: 600; }
-        .form-group input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: white; }
-        .submit-btn { width: 100%; padding: 15px; margin-top: 10px; font-size: 1.1rem; }
-        .form-status { margin-top: 10px; text-align: center; font-weight: bold; }
-        .success-msg { color: #4ade80; }
-        .error-msg { color: #ef4444; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { 
+            display: block; margin-bottom: 8px; 
+            color: var(--primary-light); font-weight: 600; font-size: 0.95rem; 
+            display: flex; align-items: center; gap: 8px;
+        }
+        .form-group input { width: 100%; background: var(--bg); }
+        
+        .submit-btn { 
+            width: 100%; padding: 15px; margin-top: 10px; font-size: 1.1rem; 
+            background: var(--primary); color: white; border:none; border-radius: 8px;
+            cursor: pointer; font-weight: bold; transition: background 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .submit-btn:hover { background: var(--primary-dark); }
+        .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .form-status { margin-top: 15px; text-align: center; font-weight: bold; padding: 10px; border-radius: 6px;}
+        .success-msg { color: #4ade80; background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; }
+        .error-msg { color: #ef4444; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; }
 
         /* --- BADGES & EXTRAS --- */
         .badge-container { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; justify-content: center; }
@@ -246,8 +264,10 @@
     </div>
 
 <script>
-    // ВСТАВЬТЕ СЮДА URL ВАШЕГО GOOGLE APPS SCRIPT
-    const SCRIPT_URL = 'ВАШ_ССЫЛКА_НА_СКРИПТ_ИЗ_ПУНКТА_1';
+    // =========================================================================
+    // ССЫЛКА НА ВАШ СКРИПТ (уже вставлена)
+    // =========================================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzg_xL2wvR4j6iNVDWWQ5FnYCM-IhWvi7grDje79DCaviMpiU2oIhxZ6dSIfL2NntQ1/exec';
 
     const tasks = [
         {
@@ -528,7 +548,7 @@
                             <label>Google Sheet Link</label>
                             <input type="url" id="sheetLink" required placeholder="https://docs.google.com/spreadsheets/...">
                         </div>
-                        <button type="submit" class="btn btn-primary submit-btn" id="submitBtn">🚀 Submit & Finish</button>
+                        <button type="submit" class="submit-btn" id="submitBtn">🚀 Submit & Finish</button>
                         <p class="form-status" id="formStatus"></p>
                     </form>
                 `;
@@ -594,13 +614,15 @@
     function submitFinalForm(e, id) {
         e.preventDefault();
         
-        if (SCRIPT_URL === 'ВАШ_ССЫЛКА_НА_СКРИПТ_ИЗ_ПУНКТА_1' || SCRIPT_URL.length < 10) {
-            alert('Ошибка: Вы не добавили ссылку на Google Script в код (строка const SCRIPT_URL).');
+        if (SCRIPT_URL.length < 10) {
+            alert('Ошибка: Нет ссылки на Google Script.');
             return;
         }
 
         const btn = document.getElementById('submitBtn');
         const status = document.getElementById('formStatus');
+        
+        // Получаем значения из 3 полей
         const fullName = document.getElementById('fullName').value;
         const dropboxLink = document.getElementById('dropboxLink').value;
         const sheetLink = document.getElementById('sheetLink').value;
@@ -617,30 +639,25 @@
 
         fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', // Важно для Google Scripts
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
         })
         .then(response => {
-            // При no-cors мы не видим реальный статус, но считаем что ушло, если нет ошибки сети
             status.innerText = "✅ Sent successfully!";
             status.className = "form-status success-msg";
             btn.innerText = "Done";
             
-            // Автоматически ставим галочку
             const checkbox = document.getElementById(`cb-${id}`);
             if (!checkbox.checked) {
                 checkbox.click();
             }
-            
-            // Очищаем форму (опционально)
-            // e.target.reset();
         })
         .catch(error => {
             console.error('Error:', error);
-            status.innerText = "❌ Error sending data. Check console.";
+            status.innerText = "❌ Error sending data.";
             status.className = "form-status error-msg";
             btn.disabled = false;
             btn.innerText = "Try Again";
@@ -711,82 +728,4 @@
     }
 
     function loadProgress() {
-        const progress = JSON.parse(localStorage.getItem('onboarding_progress'));
-        if (progress) {
-            Object.keys(progress).forEach(key => {
-                const checkbox = document.getElementById(key.replace('t', 'cb'));
-                if (checkbox) {
-                    checkbox.checked = progress[key];
-                    if (progress[key]) {
-                        document.getElementById(key).classList.add('completed');
-                    }
-                }
-            });
-        }
-    }
-
-    function showToast(points) {
-        const toast = document.createElement('div');
-        toast.innerText = `🎉 +${points} points!`;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #f97316;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            z-index: 9999;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s;
-        `;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2000);
-    }
-
-    function fireConfetti() {
-        const canvas = document.getElementById('confetti');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const particles = Array(100).fill().map(() => ({
-            x: Math.random() * canvas.width,
-            y: -20,
-            speed: Math.random() * 5 + 2,
-            color: `hsl(${Math.random() * 360}, 100%, 50%)`
-        }));
-
-        let frame = 0;
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.y += p.speed;
-                ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, 5, 5);
-                if (p.y > canvas.height) p.y = -20;
-            });
-            if (frame++ < 200) requestAnimationFrame(animate);
-            else canvas.style.display = 'none';
-        }
-        animate();
-    }
-
-    function exportData() {
-        const data = {
-            date: new Date().toISOString(),
-            points: document.getElementById('totalPoints').innerText,
-            completed: document.getElementById('completedCount').innerText
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'progress.json';
-        a.click();
-    }
-
-    window.onload = init;
-</script>
-</body>
-</html>
+        const progress = JSON.parse(localStorage.getItem('onboarding_
