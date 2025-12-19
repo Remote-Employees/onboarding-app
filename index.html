@@ -263,8 +263,9 @@
     </div>
 
 <script>
-    // --- ВАШ СКРИПТ ---
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzg_xL2wvR4j6iNVDWWQ5FnYCM-IhWvi7grDje79DCaviMpiU2oIhxZ6dSIfL2NntQ1/exec';
+    // --- ВАШ СКРИПТ (Ссылка) ---
+    // Если после переразвертывания ссылка изменилась - вставьте новую сюда.
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzO_Uh-plbkIgLFtY7WVQO_hRJetksqCzw6WXz9f_-MFzeDGOSGhOr4Q2HX9V6p9fj3/exec';
 
     const tasks = [
         {
@@ -619,23 +620,27 @@
             sheetLink: sheetLink
         };
 
+        // ВАЖНОЕ ИЗМЕНЕНИЕ: Отправляем как text/plain и парсим вручную на сервере
+        // Это позволяет избежать CORS ошибок preflight
         fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(data)
         })
         .then(response => {
+            // При no-cors мы не видим статус, но считаем, что ушло
             status.innerText = "✅ Sent successfully!";
             status.className = "form-status success-msg";
             btn.innerText = "Done";
             
+            // Ставим галочку выполненного задания
             const checkbox = document.getElementById(`cb-${id}`);
             if (!checkbox.checked) checkbox.click();
         })
         .catch(error => {
             console.error('Error:', error);
-            status.innerText = "❌ Error sending data.";
+            status.innerText = "❌ Error sending data. Check console.";
             status.className = "form-status error-msg";
             btn.disabled = false;
             btn.innerText = "Try Again";
