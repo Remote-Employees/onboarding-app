@@ -1,383 +1,1241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Remote Employees Pre-Onboarding</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Employees Pre-Onboarding</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-light: #60a5fa;
+            --primary-dark: #2563eb;
+            --accent: #f97316;
+            --accent-light: #fb923c;
+            --accent-dark: #ea580c;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+        }
 
-  <style>
-    :root {
-      --primary: #3b82f6;
-      --primary-light: #60a5fa;
-      --primary-dark: #2563eb;
-      --accent: #f97316;
-      --accent-light: #fb923c;
-      --accent-dark: #ea580c;
-      --bg: #0f172a;
-      --card: #1e293b;
-      --text: #f1f5f9;
-      --text-secondary: #cbd5e1;
-      --border: #334155;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
 
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      min-height: 100vh;
-      padding: 20px;
-      color: var(--text);
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: var(--bg);
-      border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-    .header { text-align: center; margin-bottom: 40px; }
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
 
-    .header h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(90deg, var(--primary-light), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 10px;
-      line-height: 1.2;
-    }
+        /* --- STATS & PROGRESS --- */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
 
-    /* --- STATS & PROGRESS --- */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-card:nth-child(2) { background: linear-gradient(135deg, var(--accent), var(--accent-light)); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
+        .stat-card:nth-child(3) { background: linear-gradient(135deg, var(--primary), var(--accent)); }
+        .stat-card h3 { font-size: 2rem; margin-bottom: 5px; }
 
-    .stat-card {
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-      transition: transform 0.3s;
-    }
-    .stat-card:hover { transform: translateY(-2px); }
-    .stat-card:nth-child(2) {
-      background: linear-gradient(135deg, var(--accent), var(--accent-light));
-      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
-    }
-    .stat-card:nth-child(3) { background: linear-gradient(135deg, var(--primary), var(--accent)); }
-    .stat-card h3 { font-size: 2rem; margin-bottom: 5px; }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #334155;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
 
-    .progress-bar {
-      width: 100%;
-      height: 30px;
-      background: #334155;
-      border-radius: 15px;
-      overflow: hidden;
-      margin-bottom: 30px;
-    }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: width 0.5s;
+            white-space: nowrap;
+        }
 
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      transition: width 0.5s;
-      white-space: nowrap;
-    }
+        /* --- CONTROLS --- */
+        .controls, .filter-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
 
-    /* --- CONTROLS --- */
-    .controls, .filter-buttons {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-    }
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            border-radius: 8px;
+            font-size: 16px;
+        }
 
-    input[type="text"] {
-      flex: 1;
-      min-width: 200px;
-      padding: 12px;
-      border: 2px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      border-radius: 8px;
-      font-size: 16px;
-    }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+        .btn-success { background: var(--accent); }
 
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      color: white;
-      transition: all 0.3s;
-      white-space: nowrap;
-    }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
-    .btn-success { background: var(--accent); }
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; }
 
-    .filter-btn {
-      padding: 8px 16px;
-      border: 2px solid var(--primary);
-      background: transparent;
-      color: var(--primary);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s;
-      flex-grow: 1;
-      text-align: center;
-    }
-    .filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; }
+        /* --- TASKS STYLING --- */
+        .task-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .task-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+        
+        .task-card.completed {
+            background: linear-gradient(135deg, #1e3a8a, #7c2d12);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
 
-    /* --- TASKS STYLING --- */
-    .task-card {
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 20px;
-      transition: all 0.3s;
-    }
-    .task-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+        /* Flex контейнер заголовка */
+        .task-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            cursor: pointer;
+            padding: 5px 0;
+        }
 
-    .task-card.completed {
-      background: linear-gradient(135deg, #1e3a8a, #7c2d12);
-      border-color: var(--primary);
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-    }
+        /* ЛЕВАЯ ЧАСТЬ: Эмодзи + Текст */
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 16px; 
+            flex-grow: 1; 
+            justify-content: flex-start;
+            text-align: left;
+            margin-right: 15px; /* Отступ от правой части */
+        }
 
-    .task-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      cursor: pointer;
-      padding: 5px 0;
-    }
+        /* ПРАВАЯ ЧАСТЬ: Время + Очки + ЧЕКБОКС */
+        .task-right {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Расстояние между элементами правой части */
+            flex-shrink: 0;
+        }
 
-    .task-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-grow: 1;
-      justify-content: flex-start;
-      text-align: left;
-      margin-right: 15px;
-    }
+        /* КАСТОМНЫЙ ЧЕКБОКС (Исправленный) */
+        .task-checkbox {
+            -webkit-appearance: none;
+            appearance: none;
+            /* ФИКСИРОВАННЫЕ РАЗМЕРЫ */
+            min-width: 28px;
+            width: 28px;
+            height: 28px;
+            
+            border: 2px solid #475569;
+            border-radius: 8px;
+            background-color: rgba(15, 23, 42, 0.5);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            margin: 0;
+            display: grid;
+            place-content: center;
+        }
 
-    .task-right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-shrink: 0;
-    }
+        .task-checkbox:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 8px rgba(96, 165, 250, 0.3);
+        }
 
-    .task-checkbox {
-      -webkit-appearance: none;
-      appearance: none;
-      min-width: 28px;
-      width: 28px;
-      height: 28px;
+        .task-checkbox:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
 
-      border: 2px solid #475569;
-      border-radius: 8px;
-      background-color: rgba(15, 23, 42, 0.5);
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s ease;
-      margin: 0;
-      display: grid;
-      place-content: center;
-    }
+        /* Галочка внутри чекбокса */
+        .task-checkbox:checked::after {
+            content: '✔';
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+        }
 
-    .task-checkbox:hover {
-      border-color: var(--primary-light);
-      box-shadow: 0 0 8px rgba(96, 165, 250, 0.3);
-    }
+        .task-emoji {
+            font-size: 1.8rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
 
-    .task-checkbox:checked {
-      background-color: var(--primary);
-      border-color: var(--primary);
-    }
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+        }
 
-    .task-checkbox:checked::after {
-      content: '✔';
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-    }
+        .task-time, .task-points {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: white;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+        .task-time { background: var(--primary); }
+        .task-points { background: var(--accent); }
 
-    .task-emoji {
-      font-size: 1.8rem;
-      line-height: 1;
-      flex-shrink: 0;
-    }
+        /* --- TASK DETAILS --- */
+        .task-content {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+            display: none;
+            animation: slideDown 0.3s;
+        }
+        .task-content.show { display: block; }
 
-    .task-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      line-height: 1.4;
-      color: var(--text);
-    }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .task-time, .task-points {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      color: white;
-      white-space: nowrap;
-      font-weight: 600;
-    }
-    .task-time { background: var(--primary); }
-    .task-points { background: var(--accent); }
+        .task-content h3 { margin-top: 15px; margin-bottom: 10px; color: var(--primary-light); }
+        .task-content ul { margin-left: 20px; line-height: 1.6; }
+        .task-content li { margin-bottom: 8px; }
 
-    /* --- TASK DETAILS --- */
-    .task-content {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 2px solid var(--border);
-      display: none;
-      animation: slideDown 0.3s;
-    }
-    .task-content.show { display: block; }
+        /* --- BADGES & EXTRAS --- */
+        .badge-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .badge {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            font-size: 0.9rem;
+        }
+        .badge.locked { background: #475569; opacity: 0.5; }
 
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        .next-task-btn {
+            background: var(--accent);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            width: 100%;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .next-task-btn:hover { background: var(--accent-dark); }
 
-    .task-content h3 { margin-top: 15px; margin-bottom: 10px; color: var(--primary-light); }
-    .task-content ul { margin-left: 20px; line-height: 1.6; }
-    .task-content li { margin-bottom: 8px; }
+        .certificate {
+            background: var(--card);
+            border: 5px solid;
+            border-image: linear-gradient(135deg, var(--primary), var(--accent)) 1;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
 
-    /* --- BADGES & EXTRAS --- */
-    .badge-container {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-      justify-content: center;
-    }
-    .badge {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      color: white;
-      font-size: 0.9rem;
-    }
-    .badge.locked { background: #475569; opacity: 0.5; }
+        .pro-tip, .fact, .mistake {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            border-left: 4px solid;
+        }
+        .pro-tip { background: #7c2d12; border-color: var(--accent); }
+        .fact { background: #1e3a8a; border-color: var(--primary); }
+        .mistake { background: #991b1b; border-color: #ef4444; }
 
-    .next-task-btn {
-      background: var(--accent);
-      color: white;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      width: 100%;
-      margin-bottom: 20px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      margin-top: 20px;
-      transition: background 0.3s;
-    }
-    .next-task-btn:hover { background: var(--accent-dark); }
+        canvas#confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
 
-    .certificate {
-      background: var(--card);
-      border: 5px solid;
-      border-image: linear-gradient(135deg, var(--primary), var(--accent)) 1;
-      padding: 30px;
-      text-align: center;
-      margin-top: 30px;
-    }
+        /* --- MOBILE ADAPTIVE --- */
+        @media (max-width: 600px) {
+            .task-header { flex-wrap: wrap; }
+            .task-left { width: 100%; margin-bottom: 8px; margin-right: 0;}
+            /* На мобильных чекбокс справа внизу, а время слева */
+            .task-right { width: 100%; justify-content: space-between; } 
+            .controls { flex-direction: column; }
+            .container { padding: 15px; }
+        }
 
-    .pro-tip, .fact, .mistake {
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 6px;
-      color: var(--text-secondary);
-      border-left: 4px solid;
-    }
-    .pro-tip { background: #7c2d12; border-color: var(--accent); }
-    .fact { background: #1e3a8a; border-color: var(--primary); }
-    .mistake { background: #991b1b; border-color: #ef4444; }
-
-    canvas#confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    /* --- MOBILE ADAPTIVE --- */
-    @media (max-width: 600px) {
-      .task-header { flex-wrap: wrap; }
-      .task-left { width: 100%; margin-bottom: 8px; margin-right: 0;}
-      .task-right { width: 100%; justify-content: space-between; }
-      .controls { flex-direction: column; }
-      .container { padding: 15px; }
-    }
-
-    @media print {
-      .controls, .filter-buttons, .next-task-btn, .badge-container, #doneCardControls { display: none !important; }
-      .task-content { display: block !important; }
-    }
-  </style>
+        @media print {
+            .controls, .filter-buttons, .next-task-btn, .badge-container { display: none; }
+            .task-content { display: block !important; }
+        }
+    </style>
 </head>
-
 <body>
-<canvas id="confetti"></canvas>
+    <canvas id="confetti"></canvas>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Remote Employees Pre-Onboarding</h1>
+            <p>Complete 15 tasks to become an AI-First Professional</p>
+        </div>
 
-<div class="container">
-  <div class="header">
-    <h1>🚀 Remote Employees Pre-Onboarding</h1>
-    <p>Complete 15 tasks to become an AI-First Professional</p>
-  </div>
+        <div style="text-align:center;margin-bottom:20px;font-style:italic;color:var(--text-secondary)" id="quote"></div>
 
-  <div style="text-align:center;margin-bottom:20px;font-style:italic;color:var(--text-secondary)" id="quote"></div>
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3 id="completedCount">0</h3>
+                <p>Tasks Completed</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalPoints">0</h3>
+                <p>Total Points</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="streak">0</h3>
+                <p>Current Streak</p>
+            </div>
+        </div>
 
-  <div class="stats-bar">
-    <div class="stat-card">
-      <h3 id="completedCount">0</h3>
-      <p>Tasks Completed</p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+
+        <div class="badge-container" id="badges">
+            <div class="badge locked">🤖 AI Master</div>
+            <div class="badge locked">🌐 Chrome Ninja</div>
+            <div class="badge locked">📊 Sheets Wizard</div>
+            <div class="badge locked">🎯 100% Complete</div>
+        </div>
+
+        <button class="next-task-btn" id="nextTaskBtn">▶️ Start First Task</button>
+
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="🔍 Search tasks...">
+            <button class="btn btn-primary" onclick="exportData()">📥 Export</button>
+            <button class="btn btn-success" onclick="window.print()">🖨️ Certificate</button>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-f="all">All</button>
+            <button class="filter-btn" data-f="completed">Completed</button>
+            <button class="filter-btn" data-f="incomplete">Incomplete</button>
+        </div>
+
+        <div id="tasksContainer"></div>
+
+        <div id="certSection" style="display:none">
+            <div class="certificate">
+                <h2>🏆 Certificate of Completion</h2>
+                <p>Remote Employee has successfully completed all tasks</p>
+                <p>Total Points: <strong id="certPoints">0</strong> | Date: <strong id="certDate"></strong></p>
+            </div>
+        </div>
     </div>
-    <div class="stat-card">
-      <h3 id="totalPoints">0</h3>
-      <p>Total Points</p>
+
+<script>
+    const tasks = [
+        {
+            id: 1,
+            emoji: "💬",
+            title: "If You Get Stuck - Our AI-First Approach",
+            time: "5 min",
+            points: 5,
+            why: "Remote Employees is an AI-first company. We use AI for everything. You need to master AI tools!",
+            steps: [
+                "First: Try AI (ChatGPT, Gemini, Claude, or Cursor)",
+                "Second: Search online (Google, YouTube)",
+                "Third: Contact HR on Telegram",
+                "Remember: AI is your assistant, not a replacement"
+            ],
+            deliverables: [
+                "Understand our AI-first philosophy",
+                "Know the order: AI → Search → HR",
+                "Ready to use AI as primary problem-solving tool"
+            ],
+            facts: [
+                "Our team solves 80%+ of problems using AI assistants",
+                "AI helps you work 3x faster and smarter"
+            ],
+            tips: [
+                "Always describe your problem in detail to AI",
+                "Include what you've already tried",
+                "Share screenshots and error messages with HR"
+            ],
+            mistakes: [
+                "❌ Not trying AI first before asking HR",
+                "✅ Use AI, search, then contact HR if needed"
+            ]
+        },
+        {
+            id: 2,
+            emoji: "💻",
+            title: "Install Core Software",
+            time: "20-30 min",
+            points: 30,
+            why: "You need all essential tools installed before Day 1: Dropbox for files, Discord for communication, VS Code/Cursor/AntiGravity for AI-powered editing.",
+            steps: [
+                "Install Dropbox from dropbox.com",
+                "Install Discord from discord.com",
+                "Install VS Code from code.visualstudio.com",
+                "Install Cursor from cursor.sh",
+                "Install AntiGravity from antigravity.google",
+                "Install Wispr Flow from wispr.ai"
+            ],
+            deliverables: [
+                "All 6 software installed and ready to open (no errors)"
+            ],
+            facts: [
+                "Dropbox syncs 24/7 automatically - you never manually save!",
+                "We use 3 editors to avoid AI usage limits",
+                "VS Code is used by 14+ million developers worldwide"
+            ],
+            tips: [
+                "Test each software immediately after install",
+                "Make sure no installation errors before continuing"
+            ],
+            mistakes: [
+                "❌ Skipping software testing",
+                "✅ Open each app to verify it works"
+            ]
+        },
+        {
+            id: 3,
+            emoji: "📁",
+            title: "Create Your Pre-Onboarding Folder in Dropbox",
+            time: "5 min",
+            points: 5,
+            why: "All work files sync across all 3 editors automatically. When you edit in VS Code, changes appear in Cursor and AntiGravity instantly!",
+            steps: [
+                "Open Dropbox folder on your computer",
+                "Create new folder named: Pre-Onboarding",
+                "Verify green checkmark (synced)",
+                "Share folder with hr@remoteemployees.com (Can edit access)"
+            ],
+            deliverables: [
+                "Folder created: Dropbox/Pre-Onboarding/",
+                "Green checkmark showing sync",
+                "Folder shared with HR email"
+            ],
+            facts: [
+                "This folder becomes your workspace for all 3 editors",
+                "HR needs access to review your pre-onboarding work"
+            ],
+            tips: [
+                "Check Dropbox icon in system tray for sync status",
+                "Wait for green checkmark before sharing"
+            ],
+            mistakes: [
+                "❌ Forgetting to share with HR",
+                "✅ Share with 'Can edit' permission"
+            ]
+        },
+        {
+            id: 4,
+            emoji: "🧭",
+            title: "Connect VS Code to Dropbox Folder",
+            time: "5 min",
+            points: 5,
+            why: "VS Code needs to 'open' your folder to work with files inside it. This connects your first editor to the workspace.",
+            steps: [
+                "Launch VS Code",
+                "File → Open Folder → Navigate to Dropbox/Pre-Onboarding",
+                "Select folder and click 'Select Folder'",
+                "Create test.txt file",
+                "Type 'Hello from VS Code' and save (Ctrl+S)"
+            ],
+            deliverables: [
+                "VS Code shows PRE-ONBOARDING folder in sidebar",
+                "Test file created and visible in Dropbox"
+            ],
+            facts: [
+                "VS Code is now 'watching' this folder - changes sync automatically"
+            ],
+            tips: [
+                "You're opening the FOLDER, not a file inside it",
+                "Check Dropbox to verify test.txt appears"
+            ],
+            mistakes: [
+                "❌ Opening a file instead of folder",
+                "✅ Open the entire Pre-Onboarding folder"
+            ]
+        },
+        {
+            id: 5,
+            emoji: "🤖",
+            title: "Connect Cursor to Same Dropbox Folder",
+            time: "5 min",
+            points: 5,
+            why: "Connect Cursor to SAME folder so you can switch between VS Code and Cursor and see the same files!",
+            steps: [
+                "Launch Cursor (keep VS Code open)",
+                "File → Open Folder → Dropbox/Pre-Onboarding",
+                "Verify you see test.txt from VS Code",
+                "Add new line: 'Hello from Cursor!'",
+                "Save and check VS Code - both lines appear!"
+            ],
+            deliverables: [
+                "Cursor shows PRE-ONBOARDING folder open",
+                "Can see test.txt file from VS Code",
+                "Edits in Cursor appear in VS Code"
+            ],
+            facts: [
+                "This is cloud sync magic - edit anywhere, see everywhere!"
+            ],
+            tips: [
+                "Use Alt+Tab to switch between editors quickly",
+                "Both editors can be open simultaneously"
+            ],
+            mistakes: [
+                "❌ Closing VS Code when opening Cursor",
+                "✅ Keep both editors open at same time"
+            ]
+        },
+        {
+            id: 6,
+            emoji: "🌬️",
+            title: "Connect AntiGravity to Complete 3-Editor Setup",
+            time: "5 min",
+            points: 5,
+            why: "Third editor! Now you have 3 editors with same files. When one AI hits limit, switch to another and keep working!",
+            steps: [
+                "Launch AntiGravity (keep VS Code and Cursor open)",
+                "File → Open Folder → Dropbox/Pre-Onboarding",
+                "Verify you see test.txt with both lines",
+                "Add line: 'Hello from AntiGravity!'",
+                "Check all 3 editors - all lines appear everywhere!"
+            ],
+            deliverables: [
+                "All 3 editors open to same folder",
+                "test.txt shows lines from all 3 editors",
+                "New file appears in all 3 editors instantly"
+            ],
+            facts: [
+                "3x AI capacity! When one hits limit, switch to next. Infinite workflow!"
+            ],
+            tips: [
+                "Keep all 3 editors open in separate windows",
+                "Use Alt+Tab (Windows) or Cmd+Tab (Mac) to switch"
+            ],
+            mistakes: [
+                "❌ Only using one editor",
+                "✅ Master switching between all 3"
+            ]
+        },
+        {
+            id: 7,
+            emoji: "🧾",
+            title: "What is Markdown (.md)?",
+            time: "5 min",
+            points: 5,
+            why: "All documentation uses .md (Markdown) format. You need to understand what it is and why we use it instead of Word.",
+            steps: [
+                "Learn: Markdown is plain text with formatting symbols",
+                "# for headings, **bold**, - lists, [links](url)",
+                "Press Ctrl+Shift+V in editors to preview",
+                "Practice basic syntax in a test file"
+            ],
+            deliverables: [
+                "Understand what Markdown is",
+                "Know why we use .md instead of .docx",
+                "Understand basic syntax (headings, bold, lists, links)"
+            ],
+            facts: [
+                "AI tools read/write Markdown natively",
+                "Plain text never becomes obsolete",
+                "VS Code, Cursor, AntiGravity have built-in preview!"
+            ],
+            tips: [
+                "Use preview mode to see formatted version",
+                "Markdown is faster than Word formatting"
+            ],
+            mistakes: [
+                "❌ Using Word documents for notes",
+                "✅ Use Markdown for everything"
+            ]
+        },
+        {
+            id: 8,
+            emoji: "📧",
+            title: "Create Work Email & Save Credentials",
+            time: "30 min",
+            points: 30,
+            why: "You MUST have work email BEFORE setting up Chrome, LinkedIn, and other accounts. HR provides specific email format.",
+            steps: [
+                "Wait for HR to send work email address",
+                "Create Gmail account with provided email",
+                "Create LinkedIn profile with work email",
+                "Save credentials in my_credentials.md file",
+                "Test login to both accounts immediately"
+            ],
+            deliverables: [
+                "Work Gmail created",
+                "LinkedIn profile with work email and photo",
+                "File: /Pre-Onboarding/my_credentials.md with passwords",
+                "File synced across all 3 editors"
+            ],
+            facts: [
+                "These are WORK accounts for company use",
+                "Credentials file automatically backed up in Dropbox"
+            ],
+            tips: [
+                "Test Gmail login before continuing",
+                "Use simple password - company has access",
+                "Professional photo for LinkedIn - no selfies!"
+            ],
+            mistakes: [
+                "❌ Not testing login immediately",
+                "❌ Typos in credentials file",
+                "✅ Verify everything works before moving on"
+            ]
+        },
+        {
+            id: 9,
+            emoji: "🌐",
+            title: "Set Up Google Chrome",
+            time: "15 min",
+            points: 15,
+            why: "Chrome is your hub for ALL AI tools - you'll have 10+ AI platforms open in tabs daily. Master Chrome basics and work profile.",
+            steps: [
+                "Create work profile: 'Remote Employees Work'",
+                "Sign in with work Gmail",
+                "Turn on sync",
+                "Create 'AI Tools' bookmarks folder",
+                "Add 10 AI tool bookmarks (ChatGPT, Gemini, Claude, etc.)",
+                "Screenshot bookmarks bar"
+            ],
+            deliverables: [
+                "Chrome work profile created and synced",
+                "AI Tools folder with 10 bookmarks",
+                "Screenshot: /Pre-Onboarding/screenshots/ai_bookmarks.png"
+            ],
+            facts: [
+                "Chrome is your main hub for all AI tools",
+                "Sync keeps bookmarks across devices"
+            ],
+            tips: [
+                "Press Ctrl+Shift+B to show/hide bookmarks",
+                "Choose profile color to distinguish from personal"
+            ],
+            mistakes: [
+                "❌ Using personal Chrome profile for work",
+                "✅ Create separate work profile"
+            ]
+        },
+        {
+            id: 10,
+            emoji: "🔍",
+            title: "Chrome Mastery - Keyboard Shortcuts & Tab Groups",
+            time: "20 min",
+            points: 20,
+            why: "Work with 10-20+ tabs simultaneously. Keyboard shortcuts make you 3x faster than clicking with mouse!",
+            steps: [
+                "Practice tab shortcuts: Ctrl+T (new), Ctrl+W (close), Ctrl+Shift+T (reopen)",
+                "Practice navigation: Ctrl+Tab (next), Ctrl+1-9 (jump to tab)",
+                "Create 3 tab groups: AI Tools (blue), Work Apps (red), Research (green)",
+                "Practice collapsing/expanding groups",
+                "Screenshot tab groups"
+            ],
+            deliverables: [
+                "Practiced all keyboard shortcuts",
+                "Created 3 tab groups with colors",
+                "Screenshot: /Pre-Onboarding/screenshots/chrome_tab_groups.png"
+            ],
+            facts: [
+                "Professional users have 5-10 tab groups active",
+                "Shortcuts save hours per week"
+            ],
+            tips: [
+                "Collapse groups not actively using",
+                "Use Ctrl+Shift+T to recover closed tabs",
+                "Color-code groups by purpose"
+            ],
+            mistakes: [
+                "❌ Using mouse to switch tabs (slow!)",
+                "❌ Not using tab groups with 20+ tabs",
+                "✅ Master keyboard shortcuts"
+            ]
+        },
+        {
+            id: 11,
+            emoji: "🔍",
+            title: "AI Superpowers Research",
+            time: "60 min",
+            points: 60,
+            why: "Different AI tools excel at different things! ChatGPT for writing, Perplexity for research, Gemini for images AND video, Claude for analysis.",
+            steps: [
+                "Research AI capabilities using Perplexity or ChatGPT",
+                "Ask about text AI, image AI, video AI, research AI, code AI",
+                "Take rough notes on findings",
+                "Use built-in editor AI (Cursor/VS Code/AntiGravity) to organize",
+                "Create professional cheat sheet with AI help",
+                "Add personal quick decision guide"
+            ],
+            deliverables: [
+                "File: /Pre-Onboarding/ai_tools_superpowers.md",
+                "Researched 6+ AI categories",
+                "Used editor AI to organize findings",
+                "Created personal quick decision guide"
+            ],
+            facts: [
+                "ChatGPT has DALL-E for images",
+                "Gemini can generate images AND video",
+                "Perplexity shows sources for research",
+                "Claude is best for long text analysis",
+                "Built-in editor AI helps organize research"
+            ],
+            tips: [
+                "Use Ctrl+L in Cursor to open AI chat",
+                "Ask AI to format your rough notes",
+                "Test multiple tools for same task"
+            ],
+            mistakes: [
+                "❌ Using only ChatGPT for everything",
+                "❌ Not knowing Gemini generates video",
+                "✅ Know which tool for which task"
+            ]
+        },
+        {
+            id: 12,
+            emoji: "🎙️",
+            title: "Wispr Flow Setup & Voice-to-Text Practice",
+            time: "30 min",
+            points: 30,
+            why: "Wispr converts voice to text using AI. Save HOURS per week - speak instead of typing! Think 3x faster than typing.",
+            steps: [
+                "Launch Wispr Flow and sign up with work Gmail",
+                "Configure hotkey (Ctrl+Shift+Space or Cmd+Shift+Space)",
+                "CRITICAL: Disable 'Mute music while dictating' setting",
+                "Test basic dictation in Notepad",
+                "Practice with AI prompt in ChatGPT",
+                "Document results in wispr_practice.md"
+            ],
+            deliverables: [
+                "Wispr configured with hotkey",
+                "'Mute music' setting DISABLED",
+                "File: /Pre-Onboarding/wispr_practice.md"
+            ],
+            facts: [
+                "Say 'period', 'comma', 'exclamation mark' for punctuation",
+                "Speak 3x faster than typing"
+            ],
+            tips: [
+                "Speak clearly and at normal pace",
+                "Practice with different AI prompts",
+                "Use for emails, messages, prompts"
+            ],
+            mistakes: [
+                "❌ Leaving 'Mute music' enabled",
+                "✅ Disable it in settings"
+            ]
+        },
+        {
+            id: 13,
+            emoji: "🎨",
+            title: "Good vs Bad Prompts - Generate Images",
+            time: "45 min",
+            points: 45,
+            why: "AI image quality depends on YOUR prompt! Bad prompt = bad image. Good prompt = amazing image.",
+            steps: [
+                "Learn good vs bad prompt structure",
+                "Good formula: [Subject] + [Action] + [Setting] + [Style] + [Colors] + [Mood]",
+                "Pick 2 AI tools (ChatGPT, Gemini, etc.)",
+                "Generate same prompt in both tools",
+                "Download/screenshot results",
+                "Compare and document in comparison file"
+            ],
+            deliverables: [
+                "Generated 2 images with SAME prompt in 2 AI tools",
+                "Images saved to /Pre-Onboarding/screenshots/",
+                "File: /Pre-Onboarding/image_generation_comparison.md",
+                "Learned good prompt structure"
+            ],
+            facts: [
+                "Specific prompts = better images",
+                "Include style, colors, mood for best results",
+                "Different AI = different image quality"
+            ],
+            tips: [
+                "Be VERY specific in prompts",
+                "Specify art style clearly",
+                "Test multiple AI tools"
+            ],
+            mistakes: [
+                "❌ Vague prompts: 'make a logo'",
+                "❌ Not specifying style or colors",
+                "✅ Use detailed, specific prompts"
+            ]
+        },
+        {
+            id: 14,
+            emoji: "🎥",
+            title: "Video Generation - Test & Compare AI Tools",
+            time: "45 min",
+            points: 45,
+            why: "AI can now generate VIDEOS! Cutting-edge technology. Know which AI creates videos and compare quality.",
+            steps: [
+                "Find 2 video AI tools (Gemini can generate video!)",
+                "Create video prompt with subject, action, camera, style",
+                "Generate same prompt in 2 tools",
+                "Download results (or screenshot if can't download)",
+                "Compare quality, limitations, cost",
+                "Document in comparison file"
+            ],
+            deliverables: [
+                "Tested 2 video generation AI tools",
+                "Generated 2 videos (or documented why you couldn't)",
+                "File: /Pre-Onboarding/video_generation_comparison.md",
+                "Videos saved to /Pre-Onboarding/videos/"
+            ],
+            facts: [
+                "Gemini can generate short videos!",
+                "Video AI is still learning - don't expect Hollywood quality",
+                "Great for social media content, product demos, B-roll"
+            ],
+            tips: [
+                "Start with short videos (5-10 seconds)",
+                "Specify camera movement and duration",
+                "Test multiple tools - quality varies"
+            ],
+            mistakes: [
+                "❌ Expecting perfect quality immediately",
+                "❌ Not specifying camera movement",
+                "✅ Be patient, test multiple tools"
+            ]
+        },
+        {
+            id: 15,
+            emoji: "📊",
+            title: "Google Sheets Mastery",
+            time: "45 min",
+            points: 60,
+            why: "We use Google Sheets DAILY for tracking, management, analysis. Master: folders, freezing, dropdowns, conditional formatting, formulas!",
+            steps: [
+                "Create Google Drive folder: 'Remote Employees – Practice' with subfolders",
+                "Create spreadsheet 'AI Tools Checklist' in Sheets subfolder",
+                "Freeze row 1 and column A for easy navigation",
+                "Create dropdowns for Frequency and Rating columns",
+                "Set up conditional formatting for duplicate detection (red highlight)",
+                "Set up conditional formatting for color-coding by frequency (green/yellow/blue)",
+                "Fill in all AI tools you've used",
+                "CRITICAL: Share folder with HR (hr@remoteemployees.com, Editor access)",
+                "Add bonus formulas: COUNTIF, AVERAGE"
+            ],
+            deliverables: [
+                "Google Drive folder with 4 subfolders (Docs, Sheets, Images, Screenshots)",
+                "Folder shared with HR email (Editor access)",
+                "Google Sheet with frozen rows/columns, dropdowns, conditional formatting",
+                "At least 8 AI tools listed",
+                "Rows auto-color by frequency (green/yellow/blue)",
+                "Duplicates highlighted in red"
+            ],
+            facts: [
+                "Conditional formatting auto-highlights based on rules",
+                "Dropdowns prevent typos and ensure consistency",
+                "Freezing rows/columns essential for large datasets",
+                "Formulas automate calculations"
+            ],
+            tips: [
+                "Use conditional formatting instead of manual coloring",
+                "Freeze both row AND column simultaneously",
+                "Test duplicate detection by entering same tool twice",
+                "Sort data by frequency after entering"
+            ],
+            mistakes: [
+                "❌ Not freezing rows/columns (hard to navigate)",
+                "❌ Manual coloring instead of conditional formatting",
+                "❌ Forgetting to share with HR",
+                "✅ Use automation features",
+                "✅ Share folder with Editor access"
+            ]
+        }
+    ];
+
+    let currentFilter = 'all';
+  const SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwZXuiNXj9oSbsbkU7kj9jF1t6qdAB9woTAS0GtdRHI_Our-YAvsUcLdXiWnL6h0Dnf/exec";
+
+function isValidUrl(s) {
+  try { new URL(s); return true; } catch { return false; }
+}
+
+async function submitDoneLink() {
+  const input = document.getElementById("doneLinkInput");
+  const link = (input.value || "").trim();
+
+  if (!link) return alert("Please paste your link first.");
+  if (!isValidUrl(link)) return alert("Invalid URL. Use https://...");
+
+  // GitHub Pages → Apps Script: используем no-cors
+  await fetch(SHEETS_WEBAPP_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      link,
+      page: location.href,
+      tag: "When are you done"
+    })
+  });
+
+  alert("✅ Saved to Google Sheets!");
+  input.value = "";
+}
+
+function renderDoneCard() {
+  const container = document.getElementById('tasksContainer');
+
+  const doneDiv = document.createElement('div');
+  doneDiv.className = 'task-card';
+  doneDiv.id = 't-16';
+
+  doneDiv.innerHTML = `
+    <div class="task-header" onclick="document.getElementById('ct-16').classList.toggle('show')">
+      <div class="task-left">
+        <span class="task-emoji">✅</span>
+        <span class="task-title">16: When are you done</span>
+      </div>
+      <div class="task-right">
+        <span class="task-time">1 min</span>
+        <span class="task-points">0 pts</span>
+      </div>
     </div>
-    <div class="stat-card">
-      <h3 id="streak">0</h3>
-      <p>Current Streak</p>
+
+    <div class="task-content show" id="ct-16">
+      <h3>🔗 Paste your final link</h3>
+      <p style="margin-bottom:10px;color:var(--text-secondary)">
+        Paste the link you want HR to check, then click “Save Link”.
+      </p>
+
+      <div class="controls" style="margin-bottom:0">
+        <input type="text" id="doneLinkInput" placeholder="https://..." />
+        <button class="btn btn-primary" onclick="submitDoneLink()">📌 Save Link</button>
+      </div>
     </div>
-  </div>
+  `;
 
-  <div class="progress-bar">
-    <div class="progress-fill" id="progressFill">0%</div>
-  </div>
+  container.appendChild(doneDiv);
+}
 
-  <div class="badge-container" id="badges">
-    <div class="badge locked">🤖 AI Master</div>
-    <div class="badge locked">🌐 Chrome Ninja</div>
-    <div class="badge locked">📊 Sheets Wizard</div>
-    <div class="badge locked">🎯 100% Complete</div>
-  </div>
+    const quotes = [
+        "The journey of a thousand miles begins with a single step",
+        "Success is not final, failure is not fatal",
+        "AI is not magic, it's just math",
+        "Every expert was once a beginner",
+        "The only way to do great work is to love what you do",
+        "Your limitation—it's only your imagination",
+        "Great things never come from comfort zones",
+        "The harder you work, the luckier you get"
+    ];
 
-  <button class="next-task-btn" id="nextTaskBtn">▶️ Start First Task</button>
+    function init() {
+    renderTasks();
+    renderDoneCard();
+    loadProgress();
+    updateStats();
+        document.getElementById('quote').innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
 
-  <div class="controls">
-    <input type="text" id="searchInput" placeholder="🔍 Search tasks...">
-    <button class="btn btn-prima
+        document.getElementById('searchInput').addEventListener('input', filterTasks);
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.f;
+                filterTasks();
+            });
+        });
+
+        document.getElementById('nextTaskBtn').addEventListener('click', () => {
+            const nextTaskIndex = tasks.findIndex((_, i) => !document.getElementById(`cb-${i + 1}`).checked);
+            if (nextTaskIndex !== -1) {
+                const taskElement = document.getElementById(`t-${nextTaskIndex + 1}`);
+                taskElement.scrollIntoView({ behavior: 'smooth' });
+                taskElement.querySelector('.task-content').classList.add('show');
+            }
+        });
+    }
+
+    function renderTasks() {
+        const container = document.getElementById('tasksContainer');
+        container.innerHTML = '';
+
+        tasks.forEach(task => {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task-card';
+            taskDiv.id = `t-${task.id}`;
+
+            // ЗДЕСЬ ИЗМЕНЕНИЯ:
+            // 1. В task-left оставили только Эмодзи и Заголовок
+            // 2. В task-right добавили Чекбокс в самый конец
+            taskDiv.innerHTML = `
+                <div class="task-header" onclick="toggleTask(${task.id})">
+                    <div class="task-left">
+                        <span class="task-emoji">${task.emoji}</span>
+                        <span class="task-title">${task.id}: ${task.title}</span>
+                    </div>
+                    <div class="task-right">
+                        <span class="task-time">${task.time}</span>
+                        <span class="task-points">${task.points} pts</span>
+                        <input type="checkbox" class="task-checkbox" id="cb-${task.id}" onclick="checkTask(event, ${task.id})">
+                    </div>
+                </div>
+                <div class="task-content" id="ct-${task.id}">
+                    <h3>💡 Why</h3>
+                    <p>${task.why}</p>
+
+                    <h3>📋 Steps</h3>
+                    <ul>${task.steps.map(s => `<li>${s}</li>`).join('')}</ul>
+
+                    <h3>✅ Deliverables</h3>
+                    <ul>${task.deliverables.map(d => `<li>${d}</li>`).join('')}</ul>
+
+                    ${task.facts ? `<div class="fact"><strong>📚 Facts:</strong><ul>${task.facts.map(f => `<li>${f}</li>`).join('')}</ul></div>` : ''}
+
+                    ${task.tips ? `<div class="pro-tip"><strong>🎯 Tips:</strong><ul>${task.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}
+
+                    ${task.mistakes ? `<div class="mistake"><strong>🚨 Mistakes:</strong><ul>${task.mistakes.map(m => `<li>${m}</li>`).join('')}</ul></div>` : ''}
+                </div>
+            `;
+
+            container.appendChild(taskDiv);
+        });
+    }
+
+    function toggleTask(id) {
+        document.getElementById(`ct-${id}`).classList.toggle('show');
+    }
+
+    function checkTask(event, id) {
+        event.stopPropagation();
+        const isChecked = document.getElementById(`cb-${id}`).checked;
+        document.getElementById(`t-${id}`).classList.toggle('completed', isChecked);
+        
+        if (isChecked) {
+            showToast(tasks.find(t => t.id === id).points);
+        }
+        
+        saveProgress();
+        updateStats();
+        checkCompletion();
+    }
+
+    function updateStats() {
+        const completed = tasks.filter((_, i) => document.getElementById(`cb-${i + 1}`).checked).length;
+        const points = tasks.reduce((sum, task, i) => 
+            sum + (document.getElementById(`cb-${i + 1}`).checked ? task.points : 0), 0
+        );
+
+        document.getElementById('completedCount').innerText = completed;
+        document.getElementById('totalPoints').innerText = points;
+        document.getElementById('streak').innerText = completed;
+        document.getElementById('progressFill').style.width = `${(completed / tasks.length) * 100}%`;
+        document.getElementById('progressFill').innerText = `${Math.round((completed / tasks.length) * 100)}%`;
+
+        const badgesDiv = document.getElementById('badges');
+        const badges = badgesDiv.children;
+
+        if ([9, 11, 13, 14].every(id => document.getElementById(`cb-${id}`).checked)) {
+            badges[0].classList.remove('locked');
+        }
+        if (document.getElementById('cb-10').checked) {
+            badges[1].classList.remove('locked');
+        }
+        if (document.getElementById('cb-15').checked) {
+            badges[2].classList.remove('locked');
+        }
+        if (completed === tasks.length) {
+            badges[3].classList.remove('locked');
+        }
+    }
+
+    function checkCompletion() {
+        if (tasks.every((_, i) => document.getElementById(`cb-${i + 1}`).checked)) {
+            document.getElementById('certSection').style.display = 'block';
+            document.getElementById('certPoints').innerText = document.getElementById('totalPoints').innerText;
+            document.getElementById('certDate').innerText = new Date().toLocaleDateString();
+            document.getElementById('certSection').scrollIntoView({ behavior: 'smooth' });
+            fireConfetti();
+        }
+    }
+
+    function filterTasks() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        
+        tasks.forEach((task, i) => {
+            const taskElement = document.getElementById(`t-${i + 1}`);
+            const isChecked = document.getElementById(`cb-${i + 1}`).checked;
+            
+            let visible = task.title.toLowerCase().includes(searchTerm);
+            
+            if (currentFilter === 'completed' && !isChecked) visible = false;
+            if (currentFilter === 'incomplete' && isChecked) visible = false;
+            
+            taskElement.style.display = visible ? 'block' : 'none';
+        });
+    }
+
+    function saveProgress() {
+        const progress = {};
+        tasks.forEach((_, i) => {
+            progress[`t-${i + 1}`] = document.getElementById(`cb-${i + 1}`).checked;
+        });
+        localStorage.setItem('onboarding_progress', JSON.stringify(progress));
+    }
+
+    function loadProgress() {
+        const progress = JSON.parse(localStorage.getItem('onboarding_progress'));
+        if (progress) {
+            Object.keys(progress).forEach(key => {
+                const checkbox = document.getElementById(key.replace('t', 'cb'));
+                if (checkbox) {
+                    checkbox.checked = progress[key];
+                    if (progress[key]) {
+                        document.getElementById(key).classList.add('completed');
+                    }
+                }
+            });
+        }
+    }
+
+    function showToast(points) {
+        const toast = document.createElement('div');
+        toast.innerText = `🎉 +${points} points!`;
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f97316;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 9999;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+
+    function fireConfetti() {
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = Array(100).fill().map(() => ({
+            x: Math.random() * canvas.width,
+            y: -20,
+            speed: Math.random() * 5 + 2,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        }));
+
+        let frame = 0;
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.y += p.speed;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, 5, 5);
+                if (p.y > canvas.height) p.y = -20;
+            });
+            if (frame++ < 200) requestAnimationFrame(animate);
+            else canvas.style.display = 'none';
+        }
+        animate();
+    }
+
+    function exportData() {
+        const data = {
+            date: new Date().toISOString(),
+            points: document.getElementById('totalPoints').innerText,
+            completed: document.getElementById('completedCount').innerText
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'progress.json';
+        a.click();
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
